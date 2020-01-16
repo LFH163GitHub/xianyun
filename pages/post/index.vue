@@ -1,6 +1,6 @@
 <template>
   <div>
-    首页
+    攻略首页
   </div>
 </template>
 

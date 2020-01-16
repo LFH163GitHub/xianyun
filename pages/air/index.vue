@@ -1,6 +1,6 @@
 <template>
   <div>
-    首页
+    飞机首页
   </div>
 </template>
 
