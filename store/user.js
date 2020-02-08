@@ -33,7 +33,7 @@ export const actions = {
   login(store, data) {
     console.log(store);
 
-    //提交到登录接口r
+    //提交到登录接口
     return this.$axios({
       url: "/accounts/login",
       method: "POST",
