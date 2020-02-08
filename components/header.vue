@@ -44,7 +44,12 @@
 export default {
   methods: {
     exitLogin() {
-      console.log("111");
+      // console.log("111");
+
+      const commit = this.$store.commit;
+      commit('user/cleanUserInfo');
+
+      this.$message.success('退出成功')
     }
   }
 };

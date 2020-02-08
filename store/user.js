@@ -11,12 +11,21 @@ export const state = () => ({
 });
 
 export const mutations = {
+  //添加用户数据
   setUserInfo(state, data) {
     state.userInfo = data;
-  }
+  },
   // cleanUserInfo(state,data){
   //   //
   // }
+  //清除用户数据
+  cleanUserInfo(state, info) {
+    // console.log(process.browser);
+    if (process.browser) {
+      localStorage.removeItem('userInfo')
+    }
+    state.userInfo={}
+  }
 };
 
 //国定的属性，异步修改state中的值的方法
@@ -33,7 +42,7 @@ export const actions = {
       let data = res.data;
       // console.log(res.data);
       //把数据储存到store中
-      store.commit("setUserInfo", data)
+      store.commit("setUserInfo", data);
     });
   }
 };
