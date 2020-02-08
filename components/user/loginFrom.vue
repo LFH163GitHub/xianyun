@@ -54,18 +54,22 @@ export default {
     handleLoginSubmit() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          // console.log(this.form);
-          this.$axios({
-            url: "/accounts/login",
-            method: "POST",
-            data: this.form
-          }).then(res => {
-            console.log(res.data);
+          console.log(this.form);
+          // this.$axios({
+          //   url: "/accounts/login",
+          //   method: "POST",
+          //   data: this.form
+          // }).then(res => {
+          //   console.log(res.data);
 
-            let data = res.data;
-            this.$store.commit("user/setUserInfo", data);
+          //   let data = res.data;
+          //   this.$store.commit("user/setUserInfo", data);
+          //   this.$router.push('/')
+          // });
+          this.$store.dispatch('user/login',this.form).then(()=>{
+            this.$message.success('登录成功');
             this.$router.push('/')
-          });
+          })
         } else {
           console.log("error submit!!");
         }
