@@ -111,13 +111,7 @@ export default {
         return;
       }
 
-      this.$axios({
-        url: `/captchas`,
-        method: "POST",
-        data: {
-          tel: this.form.username
-        }
-      }).then(res => {
+      this.$store.dispatch("user/sendCaptcha", this.form.username).then(res => {
         const { code } = res.data;
         this.$confirm(`模拟手机验证码为：${code}`, "提示", {
           confirmButtonText: "确定",
@@ -129,7 +123,23 @@ export default {
 
     // 注册
     handleRegSubmit() {
-      console.log(this.form);
+      // console.log(this.form);
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          // console.log(this.form);
+          const { checkPassword, ...props } = this.form;
+          console.log(props);
+          this.$axios({
+            url: `/accounts/register`,
+            method: "POST",
+            data: props
+          }).then((res)=>{
+            console.log(res.data);
+          })
+        } else {
+          console.log("error submit!!");
+        }
+      });
     }
   }
 };
