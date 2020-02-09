@@ -22,9 +22,9 @@ export const mutations = {
   cleanUserInfo(state, info) {
     // console.log(process.browser);
     if (process.browser) {
-      localStorage.removeItem('userInfo')
+      localStorage.removeItem("userInfo");
     }
-    state.userInfo={}
+    state.userInfo = {};
   }
 };
 
@@ -43,6 +43,15 @@ export const actions = {
       // console.log(res.data);
       //把数据储存到store中
       store.commit("setUserInfo", data);
+    });
+  },
+  sendCaptcha(store, data) {
+    return this.$axios({
+      url: `/captchas`,
+      method: "POST",
+      data: {
+        tel: data
+      }
     });
   }
 };
