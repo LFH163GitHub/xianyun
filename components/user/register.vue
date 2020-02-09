@@ -129,12 +129,16 @@ export default {
           // console.log(this.form);
           const { checkPassword, ...props } = this.form;
           console.log(props);
-          this.$axios({
-            url: `/accounts/register`,
-            method: "POST",
-            data: props
-          }).then((res)=>{
-            console.log(res.data);
+          // this.$axios({
+          //   url: `/accounts/register`,
+          //   method: "POST",
+          //   data: props
+          // }).then((res)=>{
+          //   console.log(res.data);
+          // })
+          this.$store.dispatch("user/register", props).then(()=>{
+            this.$message.success('注册成功');
+            this.$router.push('/')
           })
         } else {
           console.log("error submit!!");

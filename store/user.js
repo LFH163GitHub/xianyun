@@ -45,6 +45,20 @@ export const actions = {
       store.commit("setUserInfo", data);
     });
   },
+  //注册方法
+  register(store, data) {
+    return this.$axios({
+      url: `/accounts/register`,
+      method: "POST",
+      data: data
+    }).then(res => {
+      let data = res.data;
+      // console.log(res.data);
+      store.commit("setUserInfo", data);
+    });
+  },
+
+  //发送手机验证码发法
   sendCaptcha(store, data) {
     return this.$axios({
       url: `/captchas`,
