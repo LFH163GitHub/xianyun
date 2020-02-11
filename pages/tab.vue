@@ -1,3 +1,4 @@
+// tab栏练习
 <template>
   <div style="padding:100px">
     <div class="btn">
