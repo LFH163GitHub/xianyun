@@ -97,33 +97,53 @@ export default {
         });
       }
     },
+    Search(value) {
+      return new Promise((resolve, reject) => {
+        if (!value) {
+          return resolve([]);
+        }
+        this.$axios({
+          url: "/airs/city",
+          params: {
+            name: value
+          }
+        }).then(res => {
+          const { data } = res.data;
+          const newData = data.map(v => {
+            v.value = v.name.replace("市", "");
+            return v;
+          });
+          resolve(newData);
+        });
+      });
+    },
     // 出发城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
-    queryDepartSearch(value, cb) {
+    async queryDepartSearch(value, cb) {
       // console.log(value);
 
-      if (!value) {
-        return;
-      }
-      this.$axios({
-        url: "/airs/city",
-        params: {
-          name: value
-        }
-      }).then(res => {
-        // console.log(res);
-        const { data } = res.data;
-        //给data中每一项都添加一个val属性
-        const newData = data.map(v => {
-          v.value = v.name.replace("市", "");
-          return v;
-        });
-        // console.log(newData);
-        //把newData保存到departDate
-        this.departCity = newData;
+      // if (!value) {
+      //   return;
+      // }
+      // this.$axios({
+      //   url: "/airs/city",
+      //   params: {
+      //     name: value
+      //   }
+      // }).then(res => {
+      //   // console.log(res);
+      //   const { data } = res.data;
+      //   //给data中每一项都添加一个val属性
+      //   const newData = data.map(v => {
+      //     v.value = v.name.replace("市", "");
+      //     return v;
+      //   });
+      // console.log(newData);
+      //把newData保存到departDate
+      const newData = await this.Search(value);
+      this.departCity = newData;
 
-        cb(newData);
-      });
+      cb(newData);
       //测试数据
       // const arr = [
       //   // {
@@ -145,29 +165,28 @@ export default {
 
     // 目标城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
-    queryDestSearch(value, cb) {
-      if (!value) {
-        return;
-      }
-      this.$axios({
-        url: "/airs/city",
-        params: {
-          name: value
-        }
-      }).then(res => {
-        // console.log(res);
-        const { data } = res.data;
-        //给data中每一项都添加一个val属性
-        const newData = data.map(v => {
-          v.value = v.name.replace("市", "");
-          return v;
-        });
-        // console.log(newData);
-        //把newData保存到departDate
-        this.destCity = newData;
-
-        cb(newData);
-      });
+    async queryDestSearch(value, cb) {
+      // if (!value) {
+      //   return;
+      // }
+      // this.$axios({
+      //   url: "/airs/city",
+      //   params: {
+      //     name: value
+      //   }
+      // }).then(res => {
+      //   // console.log(res);
+      //   const { data } = res.data;
+      //   //给data中每一项都添加一个val属性
+      //   const newData = data.map(v => {
+      //     v.value = v.name.replace("市", "");
+      //     return v;
+      //   });
+      // console.log(newData);
+      //把newData保存到departDate
+      const newData = await this.Search(value);
+      this.destCity = newData;
+      cb(newData);
     },
 
     // 出发城市下拉选择时触发
