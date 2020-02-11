@@ -36,6 +36,7 @@
       <el-form-item label="出发时间">
         <!-- change 用户确认选择日期时触发 -->
         <el-date-picker
+          v-model="form.departDate"
           type="date"
           placeholder="请选择日期"
           style="width: 100%;"
@@ -61,6 +62,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   data() {
     return {
@@ -81,13 +83,20 @@ export default {
       //出发城市列表
       departCity: [],
       //到达城市列表
-      destCity:[]
+      destCity: []
     };
   },
   methods: {
     // tab切换时触发
-    handleSearchTab(item, index) {},
-
+    handleSearchTab(item, index) {
+      if (index === 1) {
+        this.$alert("目前暂不支持往返，请使用单程选票！", "提示", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "warning"
+        });
+      }
+    },
     // 出发城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     queryDepartSearch(value, cb) {
@@ -106,7 +115,7 @@ export default {
         const { data } = res.data;
         //给data中每一项都添加一个val属性
         const newData = data.map(v => {
-          v.value = v.name.replace('市','');
+          v.value = v.name.replace("市", "");
           return v;
         });
         // console.log(newData);
@@ -150,7 +159,7 @@ export default {
         const { data } = res.data;
         //给data中每一项都添加一个val属性
         const newData = data.map(v => {
-          v.value = v.name.replace('市','');
+          v.value = v.name.replace("市", "");
           return v;
         });
         // console.log(newData);
@@ -177,7 +186,7 @@ export default {
 
     // 目标城市下拉选择时触发
     handleDestSelect(item) {
-       if (this.destCity.length === 0) {
+      if (this.destCity.length === 0) {
         return;
       }
       this.form.destCity = this.destCity[0].value;
@@ -185,13 +194,46 @@ export default {
     },
 
     // 确认选择日期时触发
-    handleDate(value) {},
+    handleDate(value) {
+      //测试日期格式
+      // console.log(value);
+      this.form.departDate = moment(value).format("YYYY-MM-DD");
+      // console.log(moment(value).format('YYYY-MM-DD'));
+    },
 
     // 触发和目标城市切换时触发
-    handleReverse() {},
+    handleReverse() {
+      const { departCity, departCode, destCity, destCode } = this.form;
+
+      this.form.departCity = destCity;
+      this.form.departCode = destCode;
+      this.form.destCity = departCity;
+      this.form.destCode = departCode;
+    },
 
     // 提交表单是触发
-    handleSubmit() {}
+    handleSubmit() {
+      if (!this.form.departCity) {
+        this.$message.error("输入出发城市");
+        return;
+      }
+
+      if (!this.form.destCity) {
+        this.$message.error("输入到达城市");
+        return;
+      }
+
+      if (!this.form.departDate) {
+        this.$message.error("输入日期");
+        return;
+      }
+
+      console.log(this.form);
+      this.$router.push({
+        path: "/air/flights",
+        query: this.form
+      });
+    }
   },
   mounted() {}
 };
