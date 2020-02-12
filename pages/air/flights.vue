@@ -15,6 +15,23 @@
           :key="index"
           :data="item"
         ></FlightsItem>
+
+        <!-- 分页组件 -->
+        <!-- size-change：切换条数时候触发 -->
+        <!-- current-change：选择页数时候触发 -->
+        <!-- current-page: 当前页数 -->
+        <!-- page-size：当前条数 -->
+        <!-- total：总条数 -->
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageIndex"
+          :page-sizes="[5, 10, 15, 20]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="flightsData.total"
+        >
+        </el-pagination>
       </div>
 
       <!-- 侧边栏 -->
@@ -33,8 +50,23 @@ export default {
   data() {
     return {
       flightsData: {}, // 航班总数据
-      dataList: [] // 航班列表数据，用于循环flightsItem组件，单独出来是因为要分页
+      // dataList: [], // 航班列表数据，用于循环flightsItem组件，单独出来是因为要分页
+      pageIndex: 1,
+      pageSize: 5,
+      total: 0
     };
+  },
+  computed: {
+    dataList() {
+      if (!this.flightsData.flights) {
+        return [];
+      }
+      const arr = this.flightsData.flights.slice(
+        (this.pageIndex - 1) * this.pageSize,
+        this.pageIndex * this.pageSize
+      );
+      return arr;
+    }
   },
   components: {
     FlightsListHead,
@@ -46,9 +78,17 @@ export default {
       params: this.$route.query
     }).then(res => {
       this.flightsData = res.data;
-      this.dataList = this.flightsData.flights;
-      console.log(this.dataList);
+      this.total = this.flightsData.total;
+      console.log(this.total);
     });
+  },
+  methods: {
+    handleSizeChange(value) {
+      this.pageSize = value;
+    },
+    handleCurrentChange(value) {
+      this.pageIndex = value;
+    }
   }
 };
 </script>
