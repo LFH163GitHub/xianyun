@@ -4,7 +4,7 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-         <FlightsFilters/>
+        <FlightsFilters :data="flightsData" />
 
         <!-- 航班头部布局 -->
         <FlightsListHead></FlightsListHead>
@@ -46,11 +46,16 @@
 import moment from "moment";
 import FlightsListHead from "@/components/air/flightsListHead.vue";
 import FlightsItem from "@/components/air/flightsItem.vue";
-import FlightsFilters from "@/components/air/flightsFilters.vue"
+import FlightsFilters from "@/components/air/flightsFilters.vue";
 export default {
   data() {
     return {
-      flightsData: {}, // 航班总数据
+      flightsData: {
+        // 航班总数据
+        flights: [],
+        info: {},
+        options: {}
+      },
       // dataList: [], // 航班列表数据，用于循环flightsItem组件，单独出来是因为要分页
       pageIndex: 1,
       pageSize: 5,
