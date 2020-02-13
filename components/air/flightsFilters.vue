@@ -114,21 +114,56 @@ export default {
   },
   methods: {
     // 选择机场时候触发
-    handleAirport(value) {},
+    handleAirport(value) {
+      //从所有出发机场里找到符合条件的value
+      const newData = this.data.flights.filter(v => {
+        return v.org_airport_name === value;
+      });
+      this.$emit("getData", newData);
+    },
 
     // 选择出发时间时候触发
-    handleFlightTimes(value) {},
+    handleFlightTimes(value) {
+      const arr = value.split(",");
+      const newData = this.data.flights.filter(v => {
+        // 出发时间小时
+        const start = Number(v.dep_time.split(":")[0]);
+        return Number(arr[0]) <= start && start < Number(arr[1]);
+      });
+
+      // console.log(arr);
+      this.$emit("getData", newData);
+    },
 
     // 选择航空公司时候触发
     handleCompany(value) {
-
+      //从所有航班里找到符合条件的value
+      const newData = this.data.flights.filter(v => {
+        return v.airline_name === value;
+      });
+      // console.log(newData);
+      this.$emit("getData", newData);
     },
 
     // 选择机型时候触发
-    handleAirSize(value) {},
+    handleAirSize(value) {
+      //从所有机型里找到符合条件的value
+      const newData = this.data.flights.filter(v => {
+        return v.plane_size === value;
+      });
+
+      this.$emit("getData", newData);
+    },
 
     // 撤销条件时候触发
-    handleFiltersCancel() {}
+    handleFiltersCancel() {
+      this.airport = "";
+      this.flightTimes = "";
+      this.company = "";
+      this.airSize = "";
+      console.log(this.data);
+      this.$emit("getData", this.data.flights);
+    }
   }
 };
 </script>

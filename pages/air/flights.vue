@@ -4,7 +4,7 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-        <FlightsFilters :data="flightsData" />
+        <FlightsFilters :data="cacheFlightsData" @getData="getData" />
 
         <!-- 航班头部布局 -->
         <FlightsListHead></FlightsListHead>
@@ -29,7 +29,7 @@
           :page-sizes="[5, 10, 15, 20]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="flightsData.total"
+          :total="total"
         >
         </el-pagination>
       </div>
@@ -52,6 +52,12 @@ export default {
     return {
       flightsData: {
         // 航班总数据
+        flights: [],
+        info: {},
+        options: {}
+      },
+      cacheFlightsData: {
+        // 缓存一份数据，只会修改一次
         flights: [],
         info: {},
         options: {}
@@ -85,8 +91,11 @@ export default {
       params: this.$route.query
     }).then(res => {
       this.flightsData = res.data;
+       //备份数据
+      this.cacheFlightsData = {...res.data}
       this.total = this.flightsData.total;
       // console.log(this.total);
+
     });
   },
   methods: {
@@ -95,6 +104,12 @@ export default {
     },
     handleCurrentChange(value) {
       this.pageIndex = value;
+    },
+    getData(arr) {
+      this.flightsData.flights = arr;
+      // 总条数
+      this.total = arr.length;
+      // console.log(this.total);
     }
   }
 };
