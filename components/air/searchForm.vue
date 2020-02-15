@@ -254,6 +254,8 @@ export default {
       }
 
       console.log(this.form);
+
+      this.$store.commit("air/setHistory", this.form);
       this.$router.push({
         path: "/air/flights",
         query: this.form
