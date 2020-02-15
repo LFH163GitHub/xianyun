@@ -54,6 +54,7 @@
             :label="
               `${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`
             "
+            @change="handleInsurance(item.id)"
             border
           >
           </el-checkbox>
@@ -78,7 +79,7 @@
           </el-form-item>
 
           <el-form-item label="验证码">
-            <el-input></el-input>
+            <el-input v-model="form.captcha"></el-input>
           </el-form-item>
         </el-form>
         <el-button type="warning" class="submit" @click="handleSubmit"
@@ -105,6 +106,7 @@ export default {
         contactName: "", // 联系人名字
         contactPhone: "", // 联系人电话
         invoice: false, // 发票
+        captcha: "", //验证码
         seat_xid: this.$route.query.seat_xid,
         air: this.$route.query.id
       },
@@ -136,7 +138,19 @@ export default {
     handleDeleteUser(index) {
       this.form.users.splice(index, 1);
     },
-
+    // 处理保险数据
+    handleInsurance(id) {
+      // 先判断数组中是否存有id
+      const index = this.form.insurances.indexOf(id);
+      // 如果有id，说明当前是取消的状态
+      if (index > -1) {
+        // 删除该id
+        this.form.insurances.splice(index, 1);
+      } else {
+        // 没有id就是新增
+        this.form.insurances.push(id);
+      }
+    },
     // 发送手机验证码
     handleSendCaptcha() {
       //判断是否有输入值
@@ -154,7 +168,57 @@ export default {
 
     // 提交订单
     handleSubmit() {
-      console.log(this.form);
+      //自定义表单验证
+      const rules = {
+        users: {
+          errMessage: "乘机人信息不能为空",
+          //校验的函数，该函数返回是true则证明验证通过，如果是false则验证失败
+          validator: () => {
+            let valid = true;
+            this.form.users.forEach(v => {
+              if (!v.username || !v.id) {
+                valid = false;
+              }
+            });
+            return valid;
+          }
+        },
+        //验证联系人姓名
+        contactName: {
+          errMessage: "联系人姓名不能为空",
+          validator: () => {
+            return !!this.form.contactName;
+          }
+        },
+        //验证手机号
+        contactPhone: {
+          errMessage: "联系手机不能为空",
+          validator: () => {
+            return !!this.form.contactPhone;
+          }
+        },
+        //验证码
+        captcha: {
+          errMessage: "验证码不能为空",
+          validator: () => {
+            return !!this.form.captcha;
+          }
+        }
+      };
+      // console.log(Object.keys(rules));
+      // console.log(this.form);
+      let valid = true;
+      Object.keys(rules).forEach(v => {
+        if (!valid) return;
+        const item = rules[v];
+        valid = item.validator();
+        if (!valid) {
+          this.$message.error(item.errMessage);
+        }
+      });
+
+      //如果验证没通过，就直接返回
+      if (!valid) return;
     }
   }
 };
