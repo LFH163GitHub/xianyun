@@ -4,9 +4,9 @@
       <h2>剩机人</h2>
       <el-form class="member-info">
         <!-- 乘机人信息 -->
-        <div class="member-info-item" >
+        <div class="member-info-item" v-for="(item,index) in form.users" :key="index">
           <el-form-item label="乘机人类型">
-            <el-input placeholder="姓名" class="input-with-select" >
+            <el-input placeholder="姓名" class="input-with-select" v-model="item.username">
               <el-select slot="prepend" value="1" placeholder="请选择">
                 <el-option label="成人" value="1"></el-option>
               </el-select>
@@ -14,14 +14,14 @@
           </el-form-item>
 
           <el-form-item label="证件类型">
-            <el-input placeholder="证件号码" class="input-with-select">
+            <el-input placeholder="证件号码" class="input-with-select" v-model="item.id">
               <el-select slot="prepend" value="1" placeholder="请选择">
                 <el-option label="身份证" value="1" :checked="true"></el-option>
               </el-select>
             </el-input>
           </el-form-item>
 
-          <span class="delete-user" @click="handleDeleteUser()">-</span>
+          <span class="delete-user" @click="handleDeleteUser(index)">-</span>
         </div>
       </el-form>
 
@@ -33,10 +33,8 @@
     <div class="air-column">
       <h2>保险</h2>
       <div>
-        <div class="insurance-item">
-          <el-checkbox label="航空意外险：￥30/份×1  最高赔付260万" border>
-          </el-checkbox>
-          <el-checkbox label="航空延误险：￥30/份×1  最高赔付2000" border>
+        <div class="insurance-item" v-for="(item,index) in form.infoData.insurances" :key="index">
+          <el-checkbox :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`" border>
           </el-checkbox>
         </div>
       </div>
@@ -51,7 +49,7 @@
           </el-form-item>
 
           <el-form-item label="手机">
-            <el-input placeholder="请输入内容">
+            <el-input placeholder="请输入内容" v-model="form.contactPhone">
               <template slot="append">
                 <el-button @click="handleSendCaptcha">发送验证码</el-button>
               </template>
@@ -82,28 +80,57 @@ export default {
             id: ""
           }
         ],
-
+        infoData:[],
         insurances: [], // 保险数据
         contactName: "", // 联系人名字
         contactPhone: "", // 联系人电话
         invoice: false, // 发票
         seat_xid:this.$route.query.seat_xid,
-        air: this.$route.qiery.id
+        air: this.$route.query.id
       }
     };
   },
+  mounted() {
+    const {id,seat_xid} = this.$route.query
+    this.$axios({
+      url: '/airs/'+id,
+     params:{
+       seat_xid
+     }
+    }).then((res) => {
+      console.log(res.data);
+      this.form.infoData = res.data
+    })
+  },
   methods: {
     // 添加乘机人
-    handleAddUsers() {},
+    handleAddUsers() {
+      this.form.users.push({
+        username:'',
+        id:''
+      })
+    },
 
     // 移除乘机人
-    handleDeleteUser() {},
+    handleDeleteUser(index) {
+      this.form.users.splice(index,1)
+    },
 
     // 发送手机验证码
-    handleSendCaptcha() {},
+    handleSendCaptcha() {
+      if(!this.form.contactPhone){
+        this.$message.error('手机号不能为空')
+        return
+      }
+      this.$store.dispatch('user/sendCaptch',this.form.contactPhone).then(res=>{
+        this.$message.success('验证码发送成功：000000')
+      })
+    },
 
     // 提交订单
-    handleSubmit() {}
+    handleSubmit() {
+      console.log(this.form);
+    }
   }
 };
 </script>
