@@ -90,23 +90,55 @@ export default {
   },
   //监听实例下任何属性的变化
   watch: {
-    $route(){
-      console.log(this.$route);
+    // $route() {
+    //   // console.log(this.$route);
+    //   //每次url变化都重置
+    //   this.pageIndex = 1;
+    //   //请求机票列表数据
+    //   this.getList();
+    // },
+    total() {
+      this.pageIndex = 1;
     }
   },
+  beforeRouteUpdate(to, from, next) {
+    // 在当前路由改变，但是该组件被复用时调用
+    // 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候，
+    // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
+    // 可以访问组件实例 `this`
+    //每次url变化都重置
+    this.pageIndex = 1;
+    //   //请求机票列表数据
+    this.getList();
+    next();
+  },
   mounted() {
-    this.$axios({
-      url: "/airs",
-      params: this.$route.query
-    }).then(res => {
-      this.flightsData = res.data;
-      //备份数据
-      this.cacheFlightsData = { ...res.data };
-      this.total = this.flightsData.total;
-      // console.log(this.total);
-    });
+    //请求机票列表数据
+    // this.$axios({
+    //   url: "/airs",
+    //   params: this.$route.query
+    // }).then(res => {
+    //   this.flightsData = res.data;
+    //   //备份数据
+    //   this.cacheFlightsData = { ...res.data };
+    //   this.total = this.flightsData.total;
+    //   // console.log(this.total);
+    // });
+    this.getList();
   },
   methods: {
+    getList() {
+      this.$axios({
+        url: "/airs",
+        params: this.$route.query
+      }).then(res => {
+        this.flightsData = res.data;
+        //备份数据
+        this.cacheFlightsData = { ...res.data };
+        this.total = this.flightsData.total;
+        // console.log(this.total);
+      });
+    },
     handleSizeChange(value) {
       this.pageSize = value;
     },
