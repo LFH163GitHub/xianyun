@@ -66,8 +66,8 @@
       <h2>联系人</h2>
       <div class="contact">
         <el-form label-width="60px">
-          <el-form-item label="姓名" v-model="form.contactName">
-            <el-input></el-input>
+          <el-form-item label="姓名" >
+            <el-input v-model="form.contactName"></el-input>
           </el-form-item>
 
           <el-form-item label="手机">
@@ -159,9 +159,7 @@ export default {
         return;
       }
       //调用store/user.js中发送验证码
-      this.$store
-        .dispatch("user/sendCaptch", this.form.contactPhone)
-        .then(res => {
+      this.$store.dispatch("user/sendCaptcha", this.form.contactPhone).then(res => {
           this.$message.success("验证码发送成功：000000");
         });
     },
@@ -219,6 +217,20 @@ export default {
 
       //如果验证没通过，就直接返回
       if (!valid) return;
+
+      //提交表单
+
+      this.$axios({
+        url: `/airorders`,
+        method: "post",
+        data: this.form,
+        headers:{
+          //传token值是要在token前加上`Bearer `字符串(注意后面还有一个控格)，如果后台没做处理需要前台自己做处理
+          Authorization:`Bearer `+this.$store.state.user.userInfo.token
+        }
+      }).then(res=>{
+        console.log(res);
+      })
     }
   }
 };
