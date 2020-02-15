@@ -1,6 +1,6 @@
 <template>
   <div class="flight-item">
-    <div @click="isShow=!isShow">
+    <div @click="isShow = !isShow">
       <!-- 显示的机票信息 -->
       <el-row type="flex" align="middle" class="flight-info">
         <el-col :span="6">
@@ -19,7 +19,7 @@
               >
             </el-col>
             <el-col :span="8" class="flight-time">
-              <span>{{rankTime}}</span>
+              <span>{{ rankTime }}</span>
             </el-col>
             <el-col :span="8" class="flight-airport">
               <strong>{{ data.arr_time }}</strong>
@@ -57,7 +57,11 @@
               ￥{{ item.org_settle_price }}
             </el-col>
             <el-col :span="3" class="choose-button">
-              <el-button type="warning" size="mini">
+              <el-button
+                type="warning"
+                size="mini"
+                @click="handleToOrder(item)"
+              >
                 选定
               </el-button>
               <p>剩余：{{ item.discount }}</p>
@@ -73,8 +77,8 @@
 export default {
   data() {
     return {
-      isShow:false
-    }
+      isShow: false
+    };
   },
   props: {
     // 数据
@@ -101,6 +105,18 @@ export default {
 
       // 得到相差时间
       return `${Math.floor(dis / 60)}时${dis % 60}分`;
+    }
+  },
+  methods: {
+    handleToOrder(item) {
+      console.log(item.seat_xid);
+      this.$router.push({
+        path: "/air/order",
+        query: {
+          id: this.data.id,
+          seat_xid: item.seat_xid
+        }
+      });
     }
   }
 };
