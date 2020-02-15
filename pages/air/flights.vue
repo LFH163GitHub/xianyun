@@ -37,6 +37,7 @@
       <!-- 侧边栏 -->
       <div class="aside">
         <!-- 侧边栏组件 -->
+        <FlightsAside></FlightsAside>
       </div>
     </el-row>
   </section>
@@ -47,6 +48,7 @@ import moment from "moment";
 import FlightsListHead from "@/components/air/flightsListHead.vue";
 import FlightsItem from "@/components/air/flightsItem.vue";
 import FlightsFilters from "@/components/air/flightsFilters.vue";
+import FlightsAside from "@/components/air/flightsAside.vue";
 export default {
   data() {
     return {
@@ -83,7 +85,14 @@ export default {
   components: {
     FlightsListHead,
     FlightsItem,
-    FlightsFilters
+    FlightsFilters,
+    FlightsAside
+  },
+  //监听实例下任何属性的变化
+  watch: {
+    $route(){
+      console.log(this.$route);
+    }
   },
   mounted() {
     this.$axios({
@@ -91,11 +100,10 @@ export default {
       params: this.$route.query
     }).then(res => {
       this.flightsData = res.data;
-       //备份数据
-      this.cacheFlightsData = {...res.data}
+      //备份数据
+      this.cacheFlightsData = { ...res.data };
       this.total = this.flightsData.total;
       // console.log(this.total);
-
     });
   },
   methods: {
