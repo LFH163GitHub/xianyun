@@ -33,7 +33,7 @@
     <div class="air-column">
       <h2>保险</h2>
       <div>
-        <div class="insurance-item" v-for="(item,index) in form.infoData.insurances" :key="index">
+        <div class="insurance-item" v-for="(item,index) in infoData.insurances" :key="index">
           <el-checkbox :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`" border>
           </el-checkbox>
         </div>
@@ -44,7 +44,7 @@
       <h2>联系人</h2>
       <div class="contact">
         <el-form label-width="60px">
-          <el-form-item label="姓名">
+          <el-form-item label="姓名" v-model="form.contactName">
             <el-input></el-input>
           </el-form-item>
 
@@ -80,14 +80,14 @@ export default {
             id: ""
           }
         ],
-        infoData:[],
         insurances: [], // 保险数据
         contactName: "", // 联系人名字
         contactPhone: "", // 联系人电话
         invoice: false, // 发票
         seat_xid:this.$route.query.seat_xid,
         air: this.$route.query.id
-      }
+      },
+      infoData:[]
     };
   },
   mounted() {
@@ -99,7 +99,7 @@ export default {
      }
     }).then((res) => {
       console.log(res.data);
-      this.form.infoData = res.data
+      this.infoData = res.data
     })
   },
   methods: {
@@ -122,6 +122,7 @@ export default {
         this.$message.error('手机号不能为空')
         return
       }
+      //调用store/user.js中发送验证码
       this.$store.dispatch('user/sendCaptch',this.form.contactPhone).then(res=>{
         this.$message.success('验证码发送成功：000000')
       })
