@@ -224,10 +224,10 @@ export default {
         url: `/airorders`,
         method: "post",
         data: this.form,
-        headers:{
-          //传token值是要在token前加上`Bearer `字符串(注意后面还有一个控格)，如果后台没做处理需要前台自己做处理
-          Authorization:`Bearer `+this.$store.state.user.userInfo.token
-        }
+        // headers:{
+        //   //传token值是要在token前加上`Bearer `字符串(注意后面还有一个控格)，如果后台没做处理需要前台自己做处理
+        //   Authorization:`Bearer `+this.$store.state.user.userInfo.token
+        // }
       }).then(res=>{
         console.log(res);
       })

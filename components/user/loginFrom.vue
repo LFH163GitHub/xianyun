@@ -66,10 +66,13 @@ export default {
           //   this.$store.commit("user/setUserInfo", data);
           //   this.$router.push('/')
           // });
-          this.$store.dispatch('user/login',this.form).then(()=>{
-            this.$message.success('登录成功');
-            this.$router.push('/')
-          })
+          this.$store.dispatch("user/login", this.form).then(() => {
+            this.$message.success("登录成功");
+            //跳转到首页
+            // this.$router.push('/')
+            //如果returnRUl没有值则跳转到首页
+            this.$router.replace(this.$route.query.returnUrl || "/");
+          });
         } else {
           console.log("error submit!!");
         }

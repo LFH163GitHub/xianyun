@@ -108,9 +108,10 @@ export default {
     // 可以访问组件实例 `this`
     //每次url变化都重置
     this.pageIndex = 1;
-    //   //请求机票列表数据
-    this.getList();
+    //跳转
     next();
+    //请求机票列表数据
+    this.getList();
   },
   mounted() {
     //请求机票列表数据
