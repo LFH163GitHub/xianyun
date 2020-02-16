@@ -66,7 +66,7 @@
       <h2>联系人</h2>
       <div class="contact">
         <el-form label-width="60px">
-          <el-form-item label="姓名" >
+          <el-form-item label="姓名">
             <el-input v-model="form.contactName"></el-input>
           </el-form-item>
 
@@ -87,6 +87,7 @@
         >
       </div>
     </div>
+    <span>{{ allPrice }}</span>
   </div>
 </template>
 
@@ -113,6 +114,30 @@ export default {
       infoData: []
     };
   },
+  computed: {
+    //总价格，展示在侧边栏
+    allPrice() {
+      //先判断
+      if (!this.infoData.seat_infos) {
+        return;
+      }
+      let price = 0;
+      //单价
+      price += this.infoData.seat_infos.org_settle_price;
+      //基建燃油
+      price += this.infoData.airport_tax_audlet;
+      //保险
+      this.infoData.insurances.forEach(v => {
+        if (this.form.insurances.indexOf(v.id) > -1) {
+          price += v.price;
+        }
+      });
+      //人数的数量
+      price *= this.form.users.length;
+      this.$store.commit("air/setAllPrice", price);
+      return '';
+    }
+  },
   mounted() {
     const { id, seat_xid } = this.$route.query;
     this.$axios({
@@ -123,6 +148,7 @@ export default {
     }).then(res => {
       console.log(res.data);
       this.infoData = res.data;
+      this.$store.commit("air/setOrdeerDetail", res.data);
     });
   },
   methods: {
@@ -159,7 +185,9 @@ export default {
         return;
       }
       //调用store/user.js中发送验证码
-      this.$store.dispatch("user/sendCaptcha", this.form.contactPhone).then(res => {
+      this.$store
+        .dispatch("user/sendCaptcha", this.form.contactPhone)
+        .then(res => {
           this.$message.success("验证码发送成功：000000");
         });
     },
@@ -223,14 +251,14 @@ export default {
       this.$axios({
         url: `/airorders`,
         method: "post",
-        data: this.form,
+        data: this.form
         // headers:{
         //   //传token值是要在token前加上`Bearer `字符串(注意后面还有一个控格)，如果后台没做处理需要前台自己做处理
         //   Authorization:`Bearer `+this.$store.state.user.userInfo.token
         // }
-      }).then(res=>{
+      }).then(res => {
         console.log(res);
-      })
+      });
     }
   }
 };
