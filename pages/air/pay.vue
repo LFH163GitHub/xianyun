@@ -37,7 +37,24 @@ export default {
     };
   },
   mounted() {
-
+    setTimeout(() => {
+      this.$axios({
+        url: "/airorders/" + this.$route.query.id,
+        headers: {
+          //传token值是要在token前加上`Bearer `字符串(注意后面还有一个控格)，如果后台没做处理需要前台自己做处理
+          Authorization: `Bearer ` + this.$store.state.user.userInfo.token
+        }
+      }).then(res => {
+        console.log(res.data);
+        this.orderDetail = res.data;
+        //付款的二维码链接
+        const { code_url } = this.orderDetail.payInfo;
+        const canvas = document.getElementById("qrcode-stage");
+        QRCode.toCanvas(canvas, code_url, {
+          width: 200
+        });
+      });
+    }, 0);
   }
 };
 </script>
