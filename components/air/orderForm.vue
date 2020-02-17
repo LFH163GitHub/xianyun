@@ -135,7 +135,7 @@ export default {
       //人数的数量
       price *= this.form.users.length;
       this.$store.commit("air/setAllPrice", price);
-      return '';
+      return "";
     }
   },
   mounted() {
@@ -251,13 +251,22 @@ export default {
       this.$axios({
         url: `/airorders`,
         method: "post",
-        data: this.form
-        // headers:{
-        //   //传token值是要在token前加上`Bearer `字符串(注意后面还有一个控格)，如果后台没做处理需要前台自己做处理
-        //   Authorization:`Bearer `+this.$store.state.user.userInfo.token
-        // }
+        data: this.form,
+        headers: {
+          //传token值是要在token前加上`Bearer `字符串(注意后面还有一个控格)，如果后台没做处理需要前台自己做处理
+          Authorization: `Bearer ` + this.$store.state.user.userInfo.token
+        }
       }).then(res => {
-        console.log(res);
+        this.$message.success("订单提交成功");
+        //跳转付款页面
+        setTimeout(() => {
+          this.$router.push({
+            path: "/air/pay",
+            query: {
+              id: res.data.data.id //订单id
+            }
+          });
+        }, 1500);
       });
     }
   }

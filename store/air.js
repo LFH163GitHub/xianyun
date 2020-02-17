@@ -16,7 +16,9 @@ export const mutations = {
     //把新的搜索记录添加到第一给
     state.history.unshift(data);
     //截取数组长度
-    state.history.length = 5;
+    if(state.history.length > 5){
+      state.history.length = 5;
+  }
   },
   //修改orderdetail的数据
   setOrdeerDetail(state, data) {

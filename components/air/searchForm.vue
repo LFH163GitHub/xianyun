@@ -21,6 +21,7 @@
           :fetch-suggestions="queryDepartSearch"
           placeholder="请搜索出发城市"
           @select="handleDepartSelect"
+          @blur="handleDepartBlur"
           class="el-autocomplete"
         ></el-autocomplete>
       </el-form-item>
@@ -30,6 +31,7 @@
           :fetch-suggestions="queryDestSearch"
           placeholder="请搜索到达城市"
           @select="handleDestSelect"
+          @blur="andleDestBlur"
           class="el-autocomplete"
         ></el-autocomplete>
       </el-form-item>
@@ -194,28 +196,33 @@ export default {
       this.destCity = newData;
       cb(newData);
     },
-
-    // 出发城市下拉选择时触发
-    handleDepartSelect(item) {
+    //出发城市输入框失去焦点时触发
+    handleDepartBlur(item) {
       if (this.departCity.length === 0) {
         return;
       }
 
       this.form.departCity = this.departCity[0].value;
       this.form.departCode = this.departCity[0].sort;
-
-      //测试
-      // this.form.departCity = item.value;
-      // this.form.departCode = item.sort;
     },
-
-    // 目标城市下拉选择时触发
-    handleDestSelect(item) {
+    //目标城市输入框失去焦点时触发
+    andleDestBlur(item) {
       if (this.destCity.length === 0) {
         return;
       }
       this.form.destCity = this.destCity[0].value;
       this.form.destCode = this.destCity[0].sort;
+    },
+    // 出发城市下拉选择时触发
+    handleDepartSelect(item) {
+      this.form.departCity = item.value;
+      this.form.departCode = item.sort;
+    },
+
+    // 目标城市下拉选择时触发
+    handleDestSelect(item) {
+      this.form.destCity = item.value;
+      this.form.destCode = item.sort;
     },
 
     // 确认选择日期时触发
