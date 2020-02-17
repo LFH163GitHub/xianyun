@@ -54,7 +54,46 @@ export default {
           width: 200
         });
       });
+      //查询付款状态
+      this.timer = setInterval(() => {
+        this.isPay();
+      }, 3000);
     }, 0);
+  },
+  //组件销毁时执行
+  destroyed() {
+    //停止定时器
+    clearInterval(this.timer);
+  },
+  methods: {
+    //查询是否支付成功
+    isPay() {
+      const { id, pirce, orderNo } = this.orderDetail;
+      this.$axios({
+        url: "/airorders/checkpay",
+        method: "POST",
+        data: {
+          id,
+          nonce_str: pirce,
+          out_trade_no: orderNo
+        },
+        headers: {
+          Authorization: `Bearer ` + this.$store.state.user.userInfo.token
+        }
+      }).then(res => {
+        if (res.data.statusTxt == "支付完成") {
+          //停止定时器
+          clearInterval(this.timer);
+          this.$alert("支付成功", "提示", {
+            type: "success",
+            confirmButtonText: "确定",
+            callback: action => {
+              console.log(1111);
+            }
+          });
+        }
+      });
+    }
   }
 };
 </script>
